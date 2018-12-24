@@ -1,0 +1,30 @@
+plugins {
+    id 'kotlin-multiplatform'
+}
+
+kotlin {
+    targets {
+        fromPreset(presets.androidNativeArm32, 'arm32') {
+            compilations.main.outputKinds('dynamic')
+        }
+    }
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+            }
+        }
+        armMain {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+            }
+        }
+        arm32Main {
+            dependsOn armMain
+        }
+    }
+}
+
+configurations {
+    compileClasspath
+}
