@@ -1,4 +1,4 @@
-package io.github.tsuyosh.kotlinnativejni
+package io.github.tsuyosh.jni
 
 import org.junit.Test
 

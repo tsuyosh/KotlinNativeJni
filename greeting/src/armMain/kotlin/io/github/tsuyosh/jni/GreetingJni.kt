@@ -1,14 +1,14 @@
-package io.github.tsuyosh.kotlinnativejni
+package io.github.tsuyosh.jni
 
 import kotlinx.cinterop.*
 import platform.android.*
 
 /**
  * Function for JNI function:
- * jstring Java_io_github_tsuyosh_kotlinnativejni_Greeting_say(JNIEnv *env, jobject obj, jstring name)
+ * jstring Java_io_github_tsuyosh_jni_Greeting_say(JNIEnv *env, jobject obj, jstring name)
  */
 // for usage of @CName, see https://github.com/JetBrains/kotlin-native/blob/master/backend.native/tests/produce_dynamic/simple/hello.kt#L31
-@CName("Java_io_github_tsuyosh_kotlinnativejni_Greeting_say")
+@CName("Java_io_github_tsuyosh_jni_Greeting_say")
 fun Jni_Greeting_say(
     env: CPointer<JNIEnvVar>?,
     obj: jobject?,

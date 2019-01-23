@@ -1,4 +1,4 @@
-package io.github.tsuyosh.kotlinnativejni
+package io.github.tsuyosh.jni
 
 internal class Greeting {
     external fun say(name: String): String?
