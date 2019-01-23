@@ -11,10 +11,21 @@ import platform.android.*
 class JniBridge(private val jniEnv: CPointer<JNIEnvVar>) {
     private val envFunctions: JNINativeInterface = jniEnv.pointed.pointed!!
 
+    /**
+     * Pointer to JNI NewStringUTF function
+     */
     private val fNewStringUTF: CPointer<CFunction<(CPointer<JNIEnvVar>?, CPointer<ByteVar>?) -> jstring?>> =
         envFunctions.NewStringUTF!!
+
+    /**
+     * Pointer to JNI GetStringUTFChars function
+     */
     private val fGetStringUTFChars: CPointer<CFunction<(CPointer<JNIEnvVar>?, jstring?, CPointer<jbooleanVar>?) -> CPointer<ByteVar>?>> =
         envFunctions.GetStringUTFChars!!
+
+    /**
+     * Pointer to JNI ReleaseStringUTFChars function
+     */
     private val fReleaseStringUTFChars: CPointer<CFunction<(CPointer<JNIEnvVar>?, jstring?, CPointer<ByteVar>?) -> Unit>> =
         envFunctions.ReleaseStringUTFChars!!
 
@@ -28,11 +39,13 @@ class JniBridge(private val jniEnv: CPointer<JNIEnvVar>) {
     fun toString(jstringObj: jstring?): String? {
         jstringObj ?: return null
 
-        val chars: CPointer<ByteVar> = fGetStringUTFChars(
-            jniEnv, jstringObj, null
-        ) ?: return null
+        val chars: CPointer<ByteVar> =
+            fGetStringUTFChars(
+                jniEnv, jstringObj, null
+            ) ?: return null
 
-        // https://github.com/JetBrains/kotlin-native/blob/master/Interop/Runtime/src/main/kotlin/kotlinx/cinterop/Utils.kt#L409
+        // for definition of CPointer<ByteVar>.toKString()
+        // https://github.com/JetBrains/kotlin-native/blob/53ae4b8ab1f3630546b2ad435d091fe13f13deee/Interop/Runtime/src/main/kotlin/kotlinx/cinterop/Utils.kt#L416
         val stringObj = chars.toKString()
 
         fReleaseStringUTFChars(
@@ -47,12 +60,14 @@ class JniBridge(private val jniEnv: CPointer<JNIEnvVar>) {
 
         return memScoped {
             // for definition of String.cstr
-            // https://github.com/JetBrains/kotlin-native/blob/master/Interop/Runtime/src/main/kotlin/kotlinx/cinterop/Utils.kt#L358
+            // https://github.com/JetBrains/kotlin-native/blob/53ae4b8ab1f3630546b2ad435d091fe13f13deee/Interop/Runtime/src/main/kotlin/kotlinx/cinterop/Utils.kt#L365
             // for definition of MemScope
-            // https://github.com/JetBrains/kotlin-native/blob/master/Interop/Runtime/src/main/kotlin/kotlinx/cinterop/Utils.kt#L422
+            // https://github.com/JetBrains/kotlin-native/blob/53ae4b8ab1f3630546b2ad435d091fe13f13deee/Interop/Runtime/src/main/kotlin/kotlinx/cinterop/Utils.kt#L429
             val chars: CPointer<ByteVar> = stringObj.cstr.ptr
-            val result = fNewStringUTF(jniEnv, chars)
-            check()
+            val result = fNewStringUTF(
+                jniEnv, chars
+            )
+            check() // exception check
             result
         }
     }
