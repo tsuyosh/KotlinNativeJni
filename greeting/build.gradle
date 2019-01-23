@@ -5,7 +5,7 @@ plugins {
 kotlin {
     targets {
         fromPreset(presets.androidNativeArm32, 'arm32') {
-            compilations.main.outputKinds('dynamic')
+            compilations.main.outputKinds('DYNAMIC')
         }
         fromPreset(presets.androidNativeArm64, 'arm64') {
             compilations.main.outputKinds('DYNAMIC')
